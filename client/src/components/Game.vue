@@ -20,7 +20,7 @@
 
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-btn style="margin-left: 44%; height: 80px; width: 80px;" fab color="green"><v-icon dark style="font-size: 40px;">done</v-icon></v-btn>
+                                    <v-btn @click="trueInput" style="margin-left: 44%; height: 80px; width: 80px;" fab color="green"><v-icon dark style="font-size: 40px;">done</v-icon></v-btn>
                                 </v-card-actions>
                             </v-flex>
                         </v-layout>
@@ -37,7 +37,7 @@
                                 <h1 class="text-center">asd</h1>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-btn style="margin-left: 44%; height: 80px; width: 80px;" fab color="red"><v-icon dark style="font-size: 40px;">close</v-icon></v-btn>
+                                    <v-btn @click="falseInput" style="margin-left: 44%; height: 80px; width: 80px;" fab color="red"><v-icon dark style="font-size: 40px;">close</v-icon></v-btn>
                                 </v-card-actions>
                             </v-flex>
                         </v-layout>
@@ -65,6 +65,14 @@ export default {
             yes: [],
             no: [],
             questions: []
+        }
+    },
+    methods: {
+        falseInput(){
+            console.log('button false clicked')
+        },
+        trueInput(){
+            console.log('button true clicked')
         }
     },
     created (){

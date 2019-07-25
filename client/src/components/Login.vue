@@ -7,7 +7,8 @@
 <script>
 // import firebase from "firebase";
 
-import firebase from "@/apis/firebaseAuth.js";
+import firebase from "firebase";
+import db from "@/apis/firebase.js";
 var provider = new firebase.auth.GoogleAuthProvider();
 export default {
   methods: {
@@ -19,19 +20,15 @@ export default {
         .then(function(result) {
           // This gives you a Google Access Token. You can use it to access the Google API.
           var user = result.user;
-          console.log(user);
-          firebase
-            .firestore()
-            .collection("users")
+          console.log(user, "==============================");
+          db.collection("users")
             .where("email", "==", user.email)
             .get()
             .then(function(querySnapshot) {
               console.log(querySnapshot.docs.length);
               if (querySnapshot.docs.length === 0) {
-                  console.log('oi')
-                firebase
-                  .firestore()
-                  .collection("users")
+                console.log("oi");
+                db.collection("users")
                   .add({
                     email: user.email,
                     username: user.displayName

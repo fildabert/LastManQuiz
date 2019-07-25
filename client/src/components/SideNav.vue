@@ -72,7 +72,7 @@
           <v-spacer></v-spacer>
 
             <v-btn icon v-if="$store.state.currentRoom === room.id" @click="leaveRoom(room)"><v-icon small>fas fa-sign-out-alt</v-icon></v-btn>
-            <v-btn v-if="$store.state.joined" text style="font-size: 12px;"> join</v-btn>
+            <v-btn v-if="!$store.state.joined" text style="font-size: 12px;"> join</v-btn>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

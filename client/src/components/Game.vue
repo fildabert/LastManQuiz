@@ -3,8 +3,12 @@
         <v-container>
             <v-layout row wrap>
                 <v-flex xs12>
-                <Question v-for="question in questions" :key="question.id" :input="question" class="mb-2"></Question>
-
+                    <div v-show="started">
+                    <Question v-for="(question, index) in questions" :key="question.id" :input="question" v-show="currentQuestion === index" class="mb-2"></Question>
+                    </div>
+                    <div class="text-center" v-show="!started">
+                        <v-btn class="green" @click="StartGame">Start</v-btn>
+                    </div>
                 </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
                     <v-card style="height: 710px; width: 100%;" >
@@ -70,7 +74,9 @@ export default {
         return {
             yes: [],
             no: [],
-            questions: []
+            questions: [],
+            currentQuestion: 0,
+            started: false
         }
     },
     methods: {
@@ -79,6 +85,22 @@ export default {
         },
         trueInput(){
             console.log('button true clicked')
+        },
+        StartGame() {
+            this.started = true
+            var interval = setInterval(() =>{
+                console.log('masuk')
+                    this.currentQuestion++
+                if(this.currentQuestion === this.questions.length) {
+                    clearInterval(interval)
+                }
+            }, 1000);
+        },
+        timeOut() {
+            setTimeout(() =>{
+                console.log(this.currentQuestion)
+                this.currentQuestion ++
+            }, 2000)
         }
     },
     created (){

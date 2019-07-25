@@ -16,18 +16,26 @@
     </v-app-bar>
 
     <v-content>
-      <HelloWorld/>
+
+      <!-- <HelloWorld/> -->
+      <Question></Question>
+
+      <img src='./assets/yes.png' alt="yes">
+      <img src='./assets/no.png' alt="no">
+      
     </v-content>
   </v-app>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld';
+import Question from './components/Question'
 
 export default {
   name: 'App',
   components: {
     HelloWorld,
+    Question
   },
   data: () => ({
     //

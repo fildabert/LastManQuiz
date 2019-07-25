@@ -4,11 +4,12 @@
             <v-layout>
                 <v-flex xs6 style="border-right: 4px solid black">
                     <v-card style="height: 870px; width: 100%;" >
-                        <v-layout align-end fill-height >
+                        <v-layout align-end justify-center fill-height >
                             <v-flex>
-                                <v-layout>
+                                <!-- <v-layout>
                                     
-                                </v-layout>
+                                </v-layout> -->
+                                <div class="text-center"><v-icon>fas fa-user-tie</v-icon></div>
 
 
 

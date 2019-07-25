@@ -4,23 +4,25 @@
       app
       clipped
     >
+
+    
       <v-list dense>
-        <v-list-item @click="">
+        <v-list-item v-for="(item, i) in items" :key="i" :to="{path: item.link}">
           <v-list-item-action>
-            <v-icon>dashboard</v-icon>
+            <v-icon>{{item.icon}}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
+            <v-list-item-title>{{item.name}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click="">
+        <!-- <v-list-item @click="">
           <v-list-item-action>
             <v-icon>settings</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
     </v-navigation-drawer>
 </template>
@@ -31,6 +33,10 @@ export default {
     data() {
         return {
             drawer: null,
+            items: [
+                {name: "Home", icon: "home", link: "/"},
+                {name: "Room", icon: "home", link: "/game"}
+            ],
        
         color: 'primary',
         }

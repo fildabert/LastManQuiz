@@ -1,11 +1,16 @@
 <template>
     <div>
         <v-container>
-            <v-layout>
+            <v-layout row wrap>
+                <v-flex xs12>
+                <Question v-for="question in questions" :key="question.id" :input="question" class="mb-2"></Question>
+
+                </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
-                    <v-card style="height: 870px; width: 100%;" >
+                    <v-card style="height: 710px; width: 100%;" >
                         <v-layout align-end justify-center fill-height >
                             <v-flex>
+                                
                                 <!-- <v-layout>
                                     
                                 </v-layout> -->
@@ -26,7 +31,7 @@
                 </v-flex>
 
                 <v-flex xs6 >
-                    <v-card style="height: 870px; width: 100%;" >
+                    <v-card style="height: 710px; width: 100%;" >
                         <v-layout align-end fill-height >
                             <v-flex>
                                 <h1 class="text-center">asd</h1>
@@ -47,13 +52,37 @@
 </template>
 
 <script>
+import Question from './Question'
+import db from '../apis/firebase'
+
 export default {
+    components: {
+        Question
+    },
     name: "Game",
     data() {
         return {
             yes: [],
-            no: []
+            no: [],
+            questions: []
         }
+    },
+    created (){
+        let query = db.collection('question');
+
+        let observer = query.onSnapshot(querySnapshot => {
+
+        console.log(`Received query snapshot of size ${querySnapshot.size}`);
+        querySnapshot.forEach((doc)=>{
+            // console.log(doc.data())
+            this.questions.push({id: doc.id, ...doc.data()})
+        });
+            console.log(this.questions)
+
+        }, err => {
+        console.log(`Encountered error: ${err}`);
+        });
+        
     }
 }
 </script>

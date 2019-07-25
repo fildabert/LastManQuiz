@@ -23,6 +23,7 @@
       <img src='./assets/yes.png' alt="yes">
       <img src='./assets/no.png' alt="no">
       
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>

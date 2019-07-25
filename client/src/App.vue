@@ -37,6 +37,10 @@ import Login from "./components/Login"
     }),
     created () {
       this.$vuetify.theme.dark = true
+      this.$store.dispatch("GET_ROOMS")
+        setTimeout(() =>{
+            console.log(this.$store.state.rooms)
+        }, 500)
     },
   }
 </script>

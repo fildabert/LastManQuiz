@@ -8,9 +8,13 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
+      <v-spacer></v-spacer>
+           <Login/>
     </v-app-bar>
 
+
     <v-content>
+   
      <router-view></router-view>
     </v-content>
 
@@ -19,9 +23,11 @@
 
 <script>
 import SideNav from "./components/SideNav"
+import Login from "./components/Login"
   export default {
     components: {
-      SideNav
+      SideNav,
+      Login
     },
     props: {
       source: String,

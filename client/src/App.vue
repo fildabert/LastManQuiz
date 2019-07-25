@@ -16,19 +16,23 @@
     </v-app-bar>
 
     <v-content>
-      <!-- <HelloWorld/> -->
-      <router-view></router-view>
+      <Room/>
+      <!-- <Game/> -->
+      <!-- <router-view></router-view> -->
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+// import Game from './components/Game';
+import Game from './components/Game';
+import Room from './components/Room';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    Game,
+    Room
   },
   data: () => ({
     //

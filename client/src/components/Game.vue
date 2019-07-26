@@ -3,8 +3,8 @@
         <v-container>
             <v-layout row wrap>
                 <v-flex xs12>
-                    <div v-show="started">
-                    <Question :input="activeQuestion" class="mb-2" v-if="started"></Question>
+                    <div>
+                    <Question :input="activeQuestion" class="mb-2" v-if="activeQuestion"></Question>
                     </div>
                     <div class="text-center">
                         <v-btn class="green" v-show="!started" @click="StartGame">Start</v-btn>
@@ -20,6 +20,7 @@
                                     
                                 </v-layout> -->
                                 <div class="text-center">
+                                    
                                     <v-icon style="font-size: 50px;" v-for="player in yes" :key="player.name">fas fa-user-tie</v-icon>
                                 </div>
                                 <!-- <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
@@ -95,7 +96,7 @@ export default {
         falseInput(){
             console.log('button false clicked')
             var index = this.currentRoomDetails.players.findIndex(player => player.name === this.user.username)
-            if(index !== -1) {
+            if(index !== -1 && this.currentRoomDetails.players[index].status !== 'lose') {
                 this.currentRoomDetails.players[index].status = "no"
             }
             db.collection("rooms").doc(this.$route.params.name).update({
@@ -111,7 +112,7 @@ export default {
         trueInput(){
             console.log('button true clicked')
             var index = this.currentRoomDetails.players.findIndex(player => player.name === this.user.username)
-            if(index !== -1) {
+            if(index !== -1 && this.currentRoomDetails.players[index].status !== 'lose') {
                 this.currentRoomDetails.players[index].status = "yes"
             }
             db.collection("rooms").doc(this.$route.params.name).update({

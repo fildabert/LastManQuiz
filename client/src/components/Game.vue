@@ -3,8 +3,12 @@
         <v-container>
             <v-layout row wrap>
                 <v-flex xs12>
-                <Question v-for="question in questions" :key="question.id" :input="question" class="mb-2"></Question>
-
+                    <div v-show="started">
+                    <Question v-for="(question, index) in questions" :key="question.id" :input="question" v-show="currentQuestion === index" class="mb-2"></Question>
+                    </div>
+                    <div class="text-center" v-show="!started">
+                        <v-btn class="green" @click="StartGame">Start</v-btn>
+                    </div>
                 </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
                     <v-card style="height: 710px; width: 100%;" >
@@ -17,8 +21,9 @@
                                 <div class="text-center">
                                     <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon>
                                 </div>
-
-
+                                <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
+                                <img src="../assets/playerRun2.gif" alt="playerRun2" style="height: 100px; width: 100px">
+                                <h1>Disini letak player</h1>
 
                                 <v-divider></v-divider>
                                 <v-card-actions>
@@ -70,15 +75,36 @@ export default {
         return {
             yes: [],
             no: [],
-            questions: []
+            questions: [],
+            currentQuestion: 0,
+            started: false
         }
     },
     methods: {
         falseInput(){
             console.log('button false clicked')
+            
         },
         trueInput(){
             console.log('button true clicked')
+        },
+        StartGame() {
+            this.started = true
+            var interval = setInterval(() =>{
+                this.currentQuestion++
+                if(this.currentQuestion === this.questions.length) {
+                    console.log('masuk clear interval')
+                    clearInterval(interval)
+                } else {
+                    console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
+                }
+            }, 1000);
+        },
+        timeOut() {
+            setTimeout(() =>{
+                console.log(this.currentQuestion)
+                this.currentQuestion ++
+            }, 2000)
         }
     },
     created (){

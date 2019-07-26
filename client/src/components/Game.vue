@@ -21,8 +21,9 @@
                                 <div class="text-center">
                                     <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon>
                                 </div>
-
-
+                                <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
+                                <img src="../assets/playerRun2.gif" alt="playerRun2" style="height: 100px; width: 100px">
+                                <h1>Disini letak player</h1>
 
                                 <v-divider></v-divider>
                                 <v-card-actions>
@@ -82,6 +83,7 @@ export default {
     methods: {
         falseInput(){
             console.log('button false clicked')
+            
         },
         trueInput(){
             console.log('button true clicked')
@@ -89,10 +91,12 @@ export default {
         StartGame() {
             this.started = true
             var interval = setInterval(() =>{
-                console.log('masuk')
-                    this.currentQuestion++
+                this.currentQuestion++
                 if(this.currentQuestion === this.questions.length) {
+                    console.log('masuk clear interval')
                     clearInterval(interval)
+                } else {
+                    console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
                 }
             }, 1000);
         },

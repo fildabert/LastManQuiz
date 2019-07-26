@@ -20,8 +20,18 @@
                                     
                                 </v-layout> -->
                                 <div class="text-center">
+                                    <v-layout row wrap justify-center>
+                                        <v-flex xs3 v-for="player in yes" :key="player.name">
+                                            <div>
+                                            <div>{{player.name}}</div>
+                                            <img src="../assets/playerRun12.gif" style="height: 80px; width: 80px;" />
+
+                                            <!-- <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon> -->
+                                            </div>
+
+                                        </v-flex>
+                                    </v-layout>
                                     
-                                    <v-icon style="font-size: 50px;" v-for="player in yes" :key="player.name">fas fa-user-tie</v-icon>
                                 </div>
                                 <!-- <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
                                 <img src="../assets/playerRun2.gif" alt="playerRun2" style="height: 100px; width: 100px"> -->
@@ -44,7 +54,18 @@
                         <v-layout align-end fill-height >
                             <v-flex>
                                 <div class="text-center">
-                                    <v-icon style="font-size: 50px;" v-for="player in no" :key="player.name">fas fa-user-tie</v-icon>
+                                    <!-- <v-icon style="font-size: 50px;" >fas fa-user-tie</v-icon> -->
+                                    <v-layout row wrap justify-center>
+                                        <v-flex xs3 v-for="player in no" :key="player.name">
+                                            <div>
+                                            <div>{{player.name}}</div>
+                                            <img src="../assets/playerRun12.gif" style="height: 80px; width: 80px;" />
+
+                                            <!-- <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon> -->
+                                            </div>
+
+                                        </v-flex>
+                                    </v-layout>
                                 </div>
 
 
@@ -146,7 +167,8 @@ export default {
                             active: true
                         })
                         console.log(this.currentQuestion, "AFTER INTERVAL")
-                        if(this.questions[this.currentQuestion].answer) { //true
+                        if( this.questions[this.currentQuestion-1] !== undefined && this.questions[this.currentQuestion-1].answer) { //true
+                        console.log(this.questions[this.currentQuestion-1].answer, "TRUE")
                             this.currentRoomDetails.players.forEach(player =>{
                                 if(player.status === "no") {
                                     player.status = "lose"
@@ -162,6 +184,7 @@ export default {
                                 console.log(err)
                             })
                         } else { //false
+                            // console.log(this.questions[this.currentQuestion-1].answer, "FALSE")
                             this.currentRoomDetails.players.forEach(player =>{
                                 if(player.status === "yes") {
                                     player.status = "lose"
@@ -178,7 +201,7 @@ export default {
                             })
                         }
                     }
-                }, 7000);
+                }, 5000);
             }
         },
         timeOut() {
@@ -253,7 +276,7 @@ export default {
     computed: mapState(['currentRoomDetails', 'user']),
     watch: {
         currentRoomDetails: function(val) {
-            console.log(val)
+            // console.log(val)
             var yes = []
             var no = []
             var lose = []

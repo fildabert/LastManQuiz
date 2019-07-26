@@ -27,6 +27,8 @@
 import SideNav from "./components/SideNav"
 import Login from "./components/Login"
 import Signout from "./components/Signout"
+import jwt from "jsonwebtoken"
+
   export default {
     components: {
       SideNav,
@@ -42,9 +44,10 @@ import Signout from "./components/Signout"
     created () {
       this.$vuetify.theme.dark = true
       this.$store.dispatch("GET_ROOMS")
-        setTimeout(() =>{
-            console.log(this.$store.state.rooms)
-        }, 500)
+      var token = localStorage.getItem("token")
+      var decoded = jwt.verify(token, "RAHASIA")
+      console.log(decoded)
+      this.$store.commit("LOGIN", decoded.username)
     },
   }
 </script>

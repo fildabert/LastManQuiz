@@ -5,15 +5,6 @@
       clipped
     >
 
-    
-
-
-
-
-
-
-
-
 
       <v-list dense>
         <!-- <v-list-item v-for="(item, i) in items" :key="i" :to="{path: item.link}">
@@ -80,11 +71,12 @@
 
 <script>
 import db from "../apis/firebase"
+import { mapState } from "vuex";
+
 
 export default {
     props: ['openDrawer'],
     created() {
-       
     },
     data() {
         return {
@@ -97,6 +89,7 @@ export default {
     },
     methods: {
         createRoom: function() {
+          if(this.user.username){
             db.collection("rooms").doc().set({
                 name: this.inputRoom,
                 players: [{
@@ -105,6 +98,7 @@ export default {
                 }],
                 roomMaster: this.$store.state.user.username
             })
+          }
         },
         joinRoom: function(room) {
 
@@ -138,7 +132,8 @@ export default {
         openDrawer: function(val) {
             this.drawer = val
         }
-    }
+    },
+    computed: mapState(['user'])
 }
 </script>
 

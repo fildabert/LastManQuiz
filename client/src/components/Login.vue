@@ -6,7 +6,7 @@
 
 <script>
 // import firebase from "firebase";
-
+import jwt from "jsonwebtoken"
 import firebase from "firebase";
 import db from "@/apis/firebase.js";
 var provider = new firebase.auth.GoogleAuthProvider();
@@ -53,12 +53,16 @@ export default {
                     console.error("Error adding document: ", error);
                   });
               }
-              var token = result.credential.accessToken;
-              localStorage.setItem("token", token);
+              // var token = result.credential.accessToken;
+              // localStorage.setItem("token", token);
               // this.$store.state.isLogin = true
               // this.$store.state.user.username = player
+              var jwttoken = jwt.sign({username: player}, "RAHASIA", {expiresIn: "6h"})
+              localStorage.setItem("token", jwttoken)
+              // var decoded = jwt.decode(jwttoken)
+              // console.log(decoded)
               this.$store.commit('LOGIN', player)
-              console.log(token);
+              // console.log(token);
             })
             .catch(function(error) {
               console.log("Error getting documents: ", error);

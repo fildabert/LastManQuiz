@@ -48,6 +48,7 @@ export default new Vuex.Store({
     ROOM_DESTROYED: function(state, payload) {
       state.currentRoom = ""
       state.joined = false
+      router.push("/")
     }
   },
   actions: {
@@ -72,6 +73,7 @@ export default new Vuex.Store({
             userFound = true
             context.commit("SET_USER_JOINED", true)
             context.commit("SET_CURRENT_ROOM", room.id)
+            context.commit("GET_ROOM_DETAILS", room.id)
           } else if(userFound === false) {
             context.commit("SET_USER_JOINED", false)
             context.commit("SET_CURRENT_ROOM", "")
@@ -79,8 +81,8 @@ export default new Vuex.Store({
         })
       })
     },
-    SET_ROOM: function(context) {
-
+    LISTEN_ROOM: function(context) {
+      
     }
   }
 })

@@ -6,8 +6,9 @@
                     <div v-show="started">
                     <Question v-for="(question, index) in questions" :key="question.id" :input="question" v-show="currentQuestion === index" class="mb-2"></Question>
                     </div>
-                    <div class="text-center" v-show="!started">
-                        <v-btn class="green" @click="StartGame">Start</v-btn>
+                    <div class="text-center">
+                        <v-btn class="green" v-show="!started" @click="StartGame">Start</v-btn>
+                        <v-btn class="green" v-show="reset" @click="StartGame">Start</v-btn>
                     </div>
                 </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
@@ -57,6 +58,11 @@
                 </v-flex>
 
                 
+                <v-flex xs12 class="ml-3" v-show="lose.length > 0">
+                    <h2>Dead</h2>
+                    <v-icon style="font-size: 50px;" v-for="player in lose" :key="player.name">fas fa-user-tie</v-icon>
+                </v-flex>
+
             </v-layout>
         </v-container>
     </div>
@@ -76,18 +82,46 @@ export default {
         return {
             yes: [],
             no: [],
+            lose: [],
+            win: "",
             questions: [],
             currentQuestion: 0,
-            started: false
+            started: false,
+            reset: false
         }
     },
     methods: {
         falseInput(){
             console.log('button false clicked')
+            var index = this.currentRoomDetails.players.findIndex(player => player.name === this.user.username)
+            if(index !== -1) {
+                this.currentRoomDetails.players[index].status = "no"
+            }
+            db.collection("rooms").doc(this.$route.params.name).update({
+                players: this.currentRoomDetails.players
+            })
+            .then(() =>{
 
+            })
+            .catch(err =>{
+                console.log(err)
+            })
         },
         trueInput(){
             console.log('button true clicked')
+            var index = this.currentRoomDetails.players.findIndex(player => player.name === this.user.username)
+            if(index !== -1) {
+                this.currentRoomDetails.players[index].status = "yes"
+            }
+            db.collection("rooms").doc(this.$route.params.name).update({
+                players: this.currentRoomDetails.players
+            })
+            .then(() =>{
+
+            })
+            .catch(err =>{
+                console.log(err)
+            })
         },
         StartGame() {
             this.started = true
@@ -95,22 +129,84 @@ export default {
                 this.currentQuestion++
                 if(this.currentQuestion === this.questions.length) {
                     console.log('masuk clear interval')
+                    this.reset = true
                     clearInterval(interval)
                 } else {
                     console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
+                    if(this.questions[this.currentQuestion].answer) { //true
+                        this.currentRoomDetails.players.forEach(player =>{
+                            if(player.status === "no") {
+                                player.status = "lose"
+                            } 
+                        })
+                        db.collection("rooms").doc(this.$route.params.name).update({
+                            players: this.currentRoomDetails.players
+                        })
+                        .then(() =>{
+
+                        })
+                        .catch(err =>{
+                            console.log(err)
+                        })
+                    } else { //false
+                        this.currentRoomDetails.players.forEach(player =>{
+                            if(player.status === "yes") {
+                                player.status = "lose"
+                            } 
+                        })
+                        db.collection("rooms").doc(this.$route.params.name).update({
+                            players: this.currentRoomDetails.players
+                        })
+                        .then(() =>{
+
+                        })
+                        .catch(err =>{
+                            console.log(err)
+                        })
+                    }
                 }
-            }, 1000);
+            }, 6000);
         },
         timeOut() {
             setTimeout(() =>{
                 console.log(this.currentQuestion)
                 this.currentQuestion ++
             }, 2000)
+        },
+        reset() {
+            this.started = false
+            this.reset = false
+            this.currentRoomDetails.players.forEach(player =>{
+                player.status = "yes"
+            })
+            db.collection("rooms").doc(this.$route.params.name).update({
+                players: this.currentRoomDetails.players
+            })
+            .then(() =>{
+
+            })
+            .catch(err =>{
+                console.log(err)
+            })
         }
     },
     created (){
         this.$store.commit("GET_ROOM_DETAILS", this.$route.params.name)
         let query = db.collection('question');
+
+        var yes = []
+        var no = []
+        this.currentRoomDetails.players.forEach(player =>{
+            // console.log(player.status, "WATCHED")
+            if(player.status === "yes") {
+                yes.push(player)
+            } else if(player.status === "no") {
+                no.push(player)
+            }
+        })
+        this.yes = yes
+        this.no = no
+
 
         let observer = query.onSnapshot(querySnapshot => {
 
@@ -119,27 +215,32 @@ export default {
             // console.log(doc.data())
             this.questions.push({id: doc.id, ...doc.data()})
         });
-            console.log(this.questions)
+            // console.log(this.questions)
 
         }, err => {
         console.log(`Encountered error: ${err}`);
         });   
     },
-    computed: mapState(['currentRoomDetails']),
+    computed: mapState(['currentRoomDetails', 'user']),
     watch: {
         currentRoomDetails: function(val) {
+            console.log(val)
             var yes = []
             var no = []
+            var lose = []
             val.players.forEach(player =>{
-                if(player.status) {
+                // console.log(player.status, "WATCHED")
+                if(player.status === "yes") {
                     yes.push(player)
-                } else {
+                } else if(player.status === "no"){
                     no.push(player)
+                } else if(player.status === "lose") {
+                    lose.push(player)
                 }
             })
             this.yes = yes
             this.no = no
-            console.log(this.yes, "WATCHED")
+            this.lose = lose
         }
     }
 }

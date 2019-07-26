@@ -94,7 +94,7 @@ export default {
                 name: this.inputRoom,
                 players: [{
                     name: this.$store.state.user.username,
-                    status: true
+                    status: "yes"
                 }],
                 roomMaster: this.$store.state.user.username
             })
@@ -104,7 +104,7 @@ export default {
           if(this.user.username && !this.$store.state.joined) {
             room.players.push({
               name: this.user.username,
-              status: true
+              status: "yes"
             })
             db.collection("rooms").doc(room.id).update({
               players: room.players

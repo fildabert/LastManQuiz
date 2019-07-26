@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import db from "./apis/firebase"
+import router from "./router"
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     },
     joined: false,
     currentRoom: "",
+    currentRoomDetails: "",
     isLogin:false
   },
   mutations: {
@@ -26,7 +28,6 @@ export default new Vuex.Store({
     LOGOUT: function(state){
       state.user.username = ""
       state.isLogin = false
-
     },
     SET_USER: function(state, payload) {
       state.user = payload
@@ -36,6 +37,13 @@ export default new Vuex.Store({
     },
     SET_CURRENT_ROOM: function(state, payload) {
       state.currentRoom = payload
+    },
+    GET_ROOM_DETAILS: function(state, payload) {
+      var index = state.rooms.findIndex(room => room.id === payload)
+      if(index === -1) {
+        router.push("/")
+      }
+      state.currentRoomDetails = state.rooms[index]
     },
     ROOM_DESTROYED: function(state, payload) {
       state.currentRoom = ""

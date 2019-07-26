@@ -19,11 +19,11 @@
                                     
                                 </v-layout> -->
                                 <div class="text-center">
-                                    <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon>
+                                    <v-icon style="font-size: 50px;" v-for="player in yes" :key="player.name">fas fa-user-tie</v-icon>
                                 </div>
-                                <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
-                                <img src="../assets/playerRun2.gif" alt="playerRun2" style="height: 100px; width: 100px">
-                                <h1>Disini letak player</h1>
+                                <!-- <img src="../assets/playerRun.gif" alt="playerRun" style="height: 100px; width: 100px">
+                                <img src="../assets/playerRun2.gif" alt="playerRun2" style="height: 100px; width: 100px"> -->
+                                <!-- <h1>Disini letak player</h1> -->
 
                                 <v-divider></v-divider>
                                 <v-card-actions>
@@ -42,7 +42,7 @@
                         <v-layout align-end fill-height >
                             <v-flex>
                                 <div class="text-center">
-                                    <v-icon style="font-size: 50px;">fas fa-user-tie</v-icon>
+                                    <v-icon style="font-size: 50px;" v-for="player in no" :key="player.name">fas fa-user-tie</v-icon>
                                 </div>
 
 
@@ -65,6 +65,7 @@
 <script>
 import Question from './Question'
 import db from '../apis/firebase'
+import { mapState } from "vuex";
 
 export default {
     components: {
@@ -83,7 +84,7 @@ export default {
     methods: {
         falseInput(){
             console.log('button false clicked')
-            
+
         },
         trueInput(){
             console.log('button true clicked')
@@ -108,6 +109,7 @@ export default {
         }
     },
     created (){
+        this.$store.commit("GET_ROOM_DETAILS", this.$route.params.name)
         let query = db.collection('question');
 
         let observer = query.onSnapshot(querySnapshot => {
@@ -121,8 +123,24 @@ export default {
 
         }, err => {
         console.log(`Encountered error: ${err}`);
-        });
-        
+        });   
+    },
+    computed: mapState(['currentRoomDetails']),
+    watch: {
+        currentRoomDetails: function(val) {
+            var yes = []
+            var no = []
+            val.players.forEach(player =>{
+                if(player.status) {
+                    yes.push(player)
+                } else {
+                    no.push(player)
+                }
+            })
+            this.yes = yes
+            this.no = no
+            console.log(this.yes, "WATCHED")
+        }
     }
 }
 </script>

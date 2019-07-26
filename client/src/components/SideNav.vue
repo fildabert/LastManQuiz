@@ -123,6 +123,7 @@ export default {
             if(room.players.length <= 1 || this.$store.state.user.username === room.roomMaster) {
                 return db.collection("rooms").doc(room.id).delete()
                 .then(() =>{
+                    this.$store.commit("ROOM_DESTROYED")
                     console.log("You have left the room")
                 })
                 .catch(err =>{

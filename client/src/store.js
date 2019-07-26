@@ -36,6 +36,10 @@ export default new Vuex.Store({
     },
     SET_CURRENT_ROOM: function(state, payload) {
       state.currentRoom = payload
+    },
+    ROOM_DESTROYED: function(state, payload) {
+      state.currentRoom = ""
+      state.joined = false
     }
   },
   actions: {

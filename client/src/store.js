@@ -57,6 +57,9 @@ export default new Vuex.Store({
           if(found !== -1) {
             context.commit("SET_USER_JOINED", true)
             context.commit("SET_CURRENT_ROOM", room.id)
+          } else {
+            context.commit("SET_USER_JOINED", false)
+            context.commit("SET_CURRENT_ROOM", "")
           }
         })
       })

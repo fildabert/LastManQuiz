@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         createRoom: function() {
-          if(this.user.username){
+          if(this.user.username && !this.$store.state.joined){
             db.collection("rooms").doc().set({
                 name: this.inputRoom,
                 players: [{
@@ -101,7 +101,7 @@ export default {
           }
         },
         joinRoom: function(room) {
-          if(this.user.username) {
+          if(this.user.username && !this.$store.state.joined) {
             room.players.push({
               name: this.user.username,
               status: true
@@ -119,6 +119,7 @@ export default {
           }
         },
         leaveRoom: function(room) {
+          if(this.$store.state.joined){
             if(room.players.length <= 1 || this.$store.state.user.username === room.roomMaster) {
                 return db.collection("rooms").doc(room.id).delete()
                 .then(() =>{
@@ -141,6 +142,7 @@ export default {
                     console.log(err)
                 })
             }
+          }
         }
     },
     watch: {

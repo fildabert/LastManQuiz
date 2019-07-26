@@ -1,36 +1,53 @@
 <template>
-  <v-app>
-    <v-app-bar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
-      </v-toolbar-title>
+  <v-app id="inspire">
+    <SideNav :openDrawer="drawer"></SideNav>
+
+    <v-app-bar
+      app
+      clipped-left
+    >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        text
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
+           <Login  v-if="$store.state.isLogin == false"></Login>
+           <Signout  v-if="$store.state.isLogin == true"></Signout>
     </v-app-bar>
 
+
     <v-content>
-      <HelloWorld/>
+      <!-- <HelloWorld/> -->
+      <!-- <Question></Question> -->
+      <router-view></router-view>
     </v-content>
+
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import SideNav from "./components/SideNav"
+import Login from "./components/Login"
+import Signout from "./components/Signout"
+import jwt from "jsonwebtoken"
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld,
-  },
-  data: () => ({
-    //
-  }),
-};
+  export default {
+    components: {
+      SideNav,
+      Login,
+      Signout,
+    },
+    props: {
+      source: String,
+    },
+    data: () => ({
+      drawer: null,
+    }),
+    created () {
+      this.$vuetify.theme.dark = true
+      this.$store.dispatch("GET_ROOMS")
+      var token = localStorage.getItem("token")
+      var decoded = jwt.verify(token, "RAHASIA")
+      console.log(decoded)
+      this.$store.commit("LOGIN", decoded.username)
+    },
+  }
 </script>

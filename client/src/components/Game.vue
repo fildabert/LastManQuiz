@@ -10,6 +10,10 @@
                         <v-btn class="green" v-show="!started && user.username === currentRoomDetails.roomMaster" @click="StartGame">Start</v-btn>
                         <v-btn class="green" v-show="reset" @click="resetGame">Reset</v-btn>
                     </div>
+                    
+                    <div>
+                        
+                    </div>
                 </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
                     <v-card style="height: 710px; width: 100%;" >
@@ -82,7 +86,15 @@
                 
                 <v-flex xs12 class="ml-3" v-show="lose.length > 0">
                     <h2>Dead</h2>
-                    <v-icon style="font-size: 50px;" v-for="player in lose" :key="player.name">fas fa-user-tie</v-icon>
+                    <!-- <v-icon style="font-size: 50px;" v-for="player in lose" :key="player.name">fas fa-user-tie</v-icon> -->
+                    <v-layout row wrap >
+                        <v-flex xs2 v-for="player in lose" :key="player.name">
+                        <div>{{player.name}}</div>
+                        <img src="../assets/playerRun12.gif" style="height: 80px; width: 80px;" />
+                        </v-flex>
+                    </v-layout>
+
+                    
                 </v-flex>
 
             </v-layout>
@@ -94,6 +106,7 @@
 import Question from './Question'
 import db from '../apis/firebase'
 import { mapState } from "vuex";
+import Swal from "sweetalert2"
 
 export default {
     components: {
@@ -157,9 +170,35 @@ export default {
                     })
                     this.currentQuestion++
                     if(this.currentQuestion === this.questions.length) {
-                        console.log('masuk clear interval')
                         this.reset = true
+                        console.log('masuk clear interval')
                         clearInterval(interval)
+                        console.log(this.yes.length, this.no.length, this.yes, this.no)
+                        if(this.yes.length === 0 && this.no.length === 0) {
+                            var audio = new Audio('http://soundbible.com/mp3/Sad_Trombone-Joe_Lamb-665429450.mp3')
+                            audio.play()
+                            Swal.fire({
+                                type: "success",
+                                text: `Nobody won`
+                            })
+                        } else if(this.yes[0] !== undefined) {
+                            var audio = new Audio('http://soundbible.com/mp3/Ta Da-SoundBible.com-1884170640.mp3')
+                            audio.play()
+                            Swal.fire({
+                                type: "success",
+                                text: `${this.yes[0].name} has won`
+                            })
+                        } else if(this.no[0] !== undefined) {
+                            var audio = new Audio('http://soundbible.com/mp3/Ta Da-SoundBible.com-1884170640.mp3')
+                            audio.play()
+                            Swal.fire({
+                                type: "sucess",
+                                text: `${this.no[0].name} has won`
+                            })
+                        }
+
+
+
                     } else {
                         console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
                         // this.questions[this.currentQuestion].active = true

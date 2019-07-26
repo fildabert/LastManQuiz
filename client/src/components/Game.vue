@@ -178,7 +178,7 @@ export default {
                             })
                         }
                     }
-                }, 1000);
+                }, 7000);
             }
         },
         timeOut() {

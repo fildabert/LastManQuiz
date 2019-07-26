@@ -44,6 +44,10 @@ export default new Vuex.Store({
         router.push("/")
       }
       state.currentRoomDetails = state.rooms[index]
+    },
+    ROOM_DESTROYED: function(state, payload) {
+      state.currentRoom = ""
+      state.joined = false
     }
   },
   actions: {

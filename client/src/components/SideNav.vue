@@ -99,7 +99,10 @@ export default {
         createRoom: function() {
             db.collection("rooms").doc().set({
                 name: this.inputRoom,
-                players: [this.$store.state.user.username],
+                players: [{
+                    name: this.$store.state.user.username,
+                    status: true
+                }],
                 roomMaster: this.$store.state.user.username
             })
         },
@@ -117,7 +120,7 @@ export default {
                 })
             } else {
                 var updatedPlayers = room.players
-                var found = room.players.indexOf(this.$store.state.user.username)
+                var found = room.players.findIndex(player => player.name === this.$store.state.user.username)
                 updatedPlayers.splice(found, 1)
                 return db.collectioin("rooms").doc(room.id).update({
                     players: updatedPlayers

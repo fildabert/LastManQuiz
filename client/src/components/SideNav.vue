@@ -96,7 +96,8 @@ export default {
                     name: this.$store.state.user.username,
                     status: "yes"
                 }],
-                roomMaster: this.$store.state.user.username
+                roomMaster: this.$store.state.user.username,
+                started: false
             })
           }
         },

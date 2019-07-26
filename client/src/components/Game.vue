@@ -3,11 +3,11 @@
         <v-container>
             <v-layout row wrap>
                 <v-flex xs12>
-                    <div v-show="started">
-                    <Question :input="activeQuestion" class="mb-2" v-if="started"></Question>
+                    <div>
+                    <Question :input="activeQuestion" class="mb-2" v-if="activeQuestion"></Question>
                     </div>
                     <div class="text-center">
-                        <v-btn class="green" v-show="!started" @click="StartGame">Start</v-btn>
+                        <v-btn class="green" v-show="!started && user.username === currentRoomDetails.roomMaster" @click="StartGame">Start</v-btn>
                         <v-btn class="green" v-show="reset" @click="resetGame">Reset</v-btn>
                     </div>
                 </v-flex>
@@ -235,7 +235,7 @@ export default {
         });
         this.questions = tempQuestions
 
-        
+
 
 
         tempQuestions.forEach(question =>{

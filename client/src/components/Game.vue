@@ -4,11 +4,11 @@
             <v-layout row wrap>
                 <v-flex xs12>
                     <div v-show="started">
-                    <Question v-for="(question, index) in questions" :key="question.id" :input="question" v-show="currentQuestion === index" class="mb-2"></Question>
+                    <Question :input="activeQuestion" class="mb-2" v-if="started"></Question>
                     </div>
                     <div class="text-center">
                         <v-btn class="green" v-show="!started" @click="StartGame">Start</v-btn>
-                        <v-btn class="green" v-show="reset" @click="StartGame">Start</v-btn>
+                        <v-btn class="green" v-show="reset" @click="resetGame">Reset</v-btn>
                     </div>
                 </v-flex>
                 <v-flex xs6 style="border-right: 4px solid black">
@@ -87,7 +87,8 @@ export default {
             questions: [],
             currentQuestion: 0,
             started: false,
-            reset: false
+            reset: false,
+            activeQuestion: ""
         }
     },
     methods: {
@@ -124,48 +125,60 @@ export default {
             })
         },
         StartGame() {
-            this.started = true
-            var interval = setInterval(() =>{
-                this.currentQuestion++
-                if(this.currentQuestion === this.questions.length) {
-                    console.log('masuk clear interval')
-                    this.reset = true
-                    clearInterval(interval)
-                } else {
-                    console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
-                    if(this.questions[this.currentQuestion].answer) { //true
-                        this.currentRoomDetails.players.forEach(player =>{
-                            if(player.status === "no") {
-                                player.status = "lose"
-                            } 
+            if(this.user.username === this.currentRoomDetails.roomMaster){
+                console.log(this.questions[this.currentQuestion].id, "BEFORE INTERVAL")
+                this.started = true
+                var interval = setInterval(() =>{
+                    console.log(this.questions[this.currentQuestion].id)
+                    db.collection('question').doc(this.questions[this.currentQuestion].id).update({
+                        active: false        
+                    })
+                    this.currentQuestion++
+                    if(this.currentQuestion === this.questions.length) {
+                        console.log('masuk clear interval')
+                        this.reset = true
+                        clearInterval(interval)
+                    } else {
+                        console.log(this.questions[this.currentQuestion].question,'============',this.questions[this.currentQuestion].answer)
+                        // this.questions[this.currentQuestion].active = true
+                        db.collection('question').doc(this.questions[this.currentQuestion].id).update({
+                            active: true
                         })
-                        db.collection("rooms").doc(this.$route.params.name).update({
-                            players: this.currentRoomDetails.players
-                        })
-                        .then(() =>{
-
-                        })
-                        .catch(err =>{
-                            console.log(err)
-                        })
-                    } else { //false
-                        this.currentRoomDetails.players.forEach(player =>{
-                            if(player.status === "yes") {
-                                player.status = "lose"
-                            } 
-                        })
-                        db.collection("rooms").doc(this.$route.params.name).update({
-                            players: this.currentRoomDetails.players
-                        })
-                        .then(() =>{
-
-                        })
-                        .catch(err =>{
-                            console.log(err)
-                        })
+                        console.log(this.currentQuestion, "AFTER INTERVAL")
+                        if(this.questions[this.currentQuestion].answer) { //true
+                            this.currentRoomDetails.players.forEach(player =>{
+                                if(player.status === "no") {
+                                    player.status = "lose"
+                                } 
+                            })
+                            db.collection("rooms").doc(this.$route.params.name).update({
+                                players: this.currentRoomDetails.players
+                            })
+                            .then(() =>{
+    
+                            })
+                            .catch(err =>{
+                                console.log(err)
+                            })
+                        } else { //false
+                            this.currentRoomDetails.players.forEach(player =>{
+                                if(player.status === "yes") {
+                                    player.status = "lose"
+                                } 
+                            })
+                            db.collection("rooms").doc(this.$route.params.name).update({
+                                players: this.currentRoomDetails.players
+                            })
+                            .then(() =>{
+    
+                            })
+                            .catch(err =>{
+                                console.log(err)
+                            })
+                        }
                     }
-                }
-            }, 6000);
+                }, 1000);
+            }
         },
         timeOut() {
             setTimeout(() =>{
@@ -173,9 +186,10 @@ export default {
                 this.currentQuestion ++
             }, 2000)
         },
-        reset() {
+        resetGame() {
             this.started = false
             this.reset = false
+            this.currentQuestion = 0
             this.currentRoomDetails.players.forEach(player =>{
                 player.status = "yes"
             })
@@ -191,6 +205,9 @@ export default {
         }
     },
     created (){
+        this.currentQuestion = 0
+        this.activeQuestion = ""
+
         this.$store.commit("GET_ROOM_DETAILS", this.$route.params.name)
         let query = db.collection('question');
 
@@ -210,12 +227,23 @@ export default {
 
         let observer = query.onSnapshot(querySnapshot => {
 
-        console.log(`Received query snapshot of size ${querySnapshot.size}`);
+        // console.log(`Received query snapshot of size ${querySnapshot.size}`);
+
+        var tempQuestions = []
         querySnapshot.forEach((doc)=>{
-            // console.log(doc.data())
-            this.questions.push({id: doc.id, ...doc.data()})
+            tempQuestions.push({id: doc.id, ...doc.data()})
         });
-            // console.log(this.questions)
+        this.questions = tempQuestions
+
+        
+
+
+        tempQuestions.forEach(question =>{
+            if(question.active) {
+                this.activeQuestion = question
+            }
+        })
+        
 
         }, err => {
         console.log(`Encountered error: ${err}`);

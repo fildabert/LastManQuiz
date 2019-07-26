@@ -53,6 +53,7 @@ export default new Vuex.Store({
         context.commit("SET_ROOM", roomList)
         roomList.forEach(room =>{
           var found = room.players.findIndex(player => player.name === context.state.user.username)
+          console.log(room.players)
           if(found !== -1) {
             context.commit("SET_USER_JOINED", true)
             context.commit("SET_CURRENT_ROOM", room.id)

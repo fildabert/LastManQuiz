@@ -63,7 +63,7 @@
           <v-spacer></v-spacer>
 
             <v-btn icon v-if="$store.state.currentRoom === room.id" @click="leaveRoom(room)"><v-icon small>fas fa-sign-out-alt</v-icon></v-btn>
-            <v-btn v-if="!$store.state.joined" text style="font-size: 12px;"> join</v-btn>
+            <v-btn v-if="!$store.state.joined" text style="font-size: 12px;" @click="joinRoom(room)"> join</v-btn>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -101,7 +101,22 @@ export default {
           }
         },
         joinRoom: function(room) {
-
+          if(this.user.username) {
+            room.players.push({
+              name: this.user.username,
+              status: true
+            })
+            db.collection("rooms").doc(room.id).update({
+              players: room.players
+            })
+            .then(() =>{
+              console.log("You have joined the room")
+              this.$router.push(`/room/${room.id}`)
+            })
+            .catch(err =>{
+              console.log(err)
+            })
+          }
         },
         leaveRoom: function(room) {
             if(room.players.length <= 1 || this.$store.state.user.username === room.roomMaster) {
@@ -116,7 +131,7 @@ export default {
                 var updatedPlayers = room.players
                 var found = room.players.findIndex(player => player.name === this.$store.state.user.username)
                 updatedPlayers.splice(found, 1)
-                return db.collectioin("rooms").doc(room.id).update({
+                return db.collection("rooms").doc(room.id).update({
                     players: updatedPlayers
                 })
                 .then(() =>{

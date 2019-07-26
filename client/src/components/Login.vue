@@ -12,19 +12,32 @@ import db from "@/apis/firebase.js";
 var provider = new firebase.auth.GoogleAuthProvider();
 export default {
   methods: {
+    signOut() {
+      firebase
+        .auth()
+        .signOut()
+        .then(function() {
+          // Sign-out successful.
+        })
+        .catch(function(error) {
+          // An error happened.
+        });
+    },
     callGoogleSignIn() {
       var provider = new firebase.auth.GoogleAuthProvider();
+
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then(function(result) {
+        .then((result)=> {
           // This gives you a Google Access Token. You can use it to access the Google API.
           var user = result.user;
+          var player = user.displayName
           console.log(user, "==============================");
           db.collection("users")
             .where("email", "==", user.email)
             .get()
-            .then(function(querySnapshot) {
+            .then((querySnapshot)=> {
               console.log(querySnapshot.docs.length);
               if (querySnapshot.docs.length === 0) {
                 console.log("oi");
@@ -42,6 +55,9 @@ export default {
               }
               var token = result.credential.accessToken;
               localStorage.setItem("token", token);
+              // this.$store.state.isLogin = true
+              // this.$store.state.user.username = player
+              this.$store.commit('LOGIN', player)
               console.log(token);
             })
             .catch(function(error) {

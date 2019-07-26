@@ -9,7 +9,8 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
-           <Login/>
+           <Login  v-if="$store.state.isLogin == false"></Login>
+           <Signout  v-if="$store.state.isLogin == true"></Signout>
     </v-app-bar>
 
 
@@ -25,10 +26,12 @@
 <script>
 import SideNav from "./components/SideNav"
 import Login from "./components/Login"
+import Signout from "./components/Signout"
   export default {
     components: {
       SideNav,
-      Login
+      Login,
+      Signout,
     },
     props: {
       source: String,

@@ -8,14 +8,25 @@ export default new Vuex.Store({
   state: {
     rooms: [],
     user: {
-      username: "Filbert"
+      username: ""
     },
     joined: false,
     currentRoom: "",
+    isLogin:false
   },
   mutations: {
     SET_ROOM: function(state, payload) {
       state.rooms = payload
+    },
+    LOGIN: function(state, payload){
+      state.user.username = payload
+      state.isLogin = true
+
+    },
+    LOGOUT: function(state){
+      state.user.username = ""
+      state.isLogin = false
+
     },
     SET_USER: function(state, payload) {
       state.user = payload
